@@ -4,6 +4,7 @@ os.environ['APP_SETTINGS'] = "config.DevelopmentConfig"
 
 import seed
 
+
 from Todo import app
 
 
