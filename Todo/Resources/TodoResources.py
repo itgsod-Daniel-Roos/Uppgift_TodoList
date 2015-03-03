@@ -40,16 +40,14 @@ class Todos(rest.Resource):
             }
 
     def delete(self):
-
         return {}
 
 @api.resource('/TodoItem/<int:id>')
-class TodoItem(rest.Resource):
+class TodoItem(rest.Resource):                      #Ger ett Todo Item.
     def get(self, todo_id):
         try:
-
             with db_session:
-                todo = Todo[todo_id]
+                todo = Todo[todo_id]                     #Egentligen samma som Todo.get(id=todo_id).
                 tags = [{tag.name: tag.url} for tag in todo.tags]
 
                 return {
@@ -59,3 +57,13 @@ class TodoItem(rest.Resource):
 
         except ObjectNotFound:
             return {}, 404
+
+@api.resource('/Tags/<int:id>')
+class Tags(rest.Resource):                          #Ger alla tags.
+    def get(self):
+        with db_session:
+           return {
+               tag.name: tag.url
+               for tag in Tag.select()
+           }
+
