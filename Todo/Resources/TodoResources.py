@@ -1,4 +1,4 @@
-from pony.orm import db_session, select
+from pony.orm import db_session, select, ObjectNotFound, orm
 import flask.ext.restful as rest
 import json
 
@@ -27,7 +27,7 @@ class Todos(rest.Resource):
                     tag = Tag(name=tag_name)
                 item.tags += tag
 
-        return {}, 200
+        return {}, 200                          #"Success!"
 
     def get(self):
         with db_session:
@@ -42,3 +42,20 @@ class Todos(rest.Resource):
     def delete(self):
 
         return {}
+
+@api.resource('/TodoItem/<int:id>')
+class TodoItem(rest.Resource):
+    def get(self, todo_id):
+        try:
+
+            with db_session:
+                todo = Todo[todo_id]
+                tags = [{tag.name: tag.url} for tag in todo.tags]
+
+                return {
+                    "task": todo.data,
+                    "tags": tags
+                }
+
+        except ObjectNotFound:
+            return {}, 404
